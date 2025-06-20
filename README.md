@@ -155,5 +155,3 @@ Preview the production build of the app.
 This project is licensed under the MIT License.
 
 ---
-
-This **README.md** provides a detailed overview of the **LeazyLoad** project setup, how to initialize it, and how **Lazy Loading** and **Suspense** are used. You can easily expand this file by adding any specific features you implement in the future.

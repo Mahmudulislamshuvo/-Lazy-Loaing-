@@ -1,13 +1,19 @@
-import { useState } from "react";
-import ShapeDemo from "./components/ShapeDemo";
-import ColorDemo from "./components/ColorDemo";
-import SizeDemo from "./components/SizeDemo";
+import { Suspense, useState } from "react";
+import demos from "./data/demos";
+import importDemo from "./utils/importDemo";
 
 export default function App() {
   const [selectedDemo, setSelectedDemo] = useState(null);
 
-  const selectDemo = (type) => {
-    setSelectedDemo(type);
+  const loadDemo = async (file) => {
+    const Demo = await importDemo(file);
+    return <Demo />;
+  };
+
+  const selectDemo = async (file) => {
+    const DemoComponent = await loadDemo(file);
+
+    setSelectedDemo(DemoComponent);
   };
 
   return (
@@ -16,30 +22,21 @@ export default function App() {
         <h1>React Lazy load explained</h1>
 
         <div className="flex gap-x-5 pt-5">
-          <button
-            className="bg-amber-300 px-4 py-2 rounded-2xl"
-            onClick={() => selectDemo("shape")}
-          >
-            Shape Demo
-          </button>
-          <button
-            className="bg-green-300 px-4 py-2 rounded-2xl"
-            onClick={() => selectDemo("color")}
-          >
-            Color Demo
-          </button>
-          <button
-            className="bg-blue-300 px-4 py-2 rounded-2xl"
-            onClick={() => selectDemo("size")}
-          >
-            Size Demo
-          </button>
+          {demos.map((demo) => (
+            <button
+              className="bg-amber-300 px-4 py-2 rounded-2xl"
+              key={demo.name}
+              onClick={() => selectDemo(demo.file)}
+            >
+              {demo.name}
+            </button>
+          ))}
         </div>
 
         <div>
-          {selectedDemo === "shape" && <ShapeDemo />}
-          {selectedDemo === "color" && <ColorDemo />}
-          {selectedDemo === "size" && <SizeDemo />}
+          <Suspense fallback={<h1>Demo loading...</h1>}>
+            {selectedDemo}
+          </Suspense>
         </div>
       </div>
     </div>
